@@ -130,6 +130,11 @@ function ContentAssist(viewer, processor, options) {
 			}
 		}
 	});
+	
+	tx_utils.addEvent(popup_content, 'mousedown', function(/* Event */ evt) {
+		evt = tx_utils.normalizeEvent(evt);
+		evt.preventDefault();
+	});
 }
 
 ContentAssist.prototype = {
