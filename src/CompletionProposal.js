@@ -10,11 +10,12 @@
  * relative to <code>offset</code>
  * 
  * @include "TextViewer.js"
- */function CompletionProposal(str, offset, length, cursor) {
+ */function CompletionProposal(str, offset, length, cursor, additional_info) {
 	this.str = str;
 	this.offset = offset;
 	this.len = length;
 	this.cursor = cursor;
+	this.additional_info = additional_info || '';
 }
 
 CompletionProposal.prototype = {
@@ -32,7 +33,7 @@ CompletionProposal.prototype = {
 	 * @return {String}
 	 */
 	getAdditionalInfo: function() {
-		return '';
+		return this.additional_info;
 	},
 	
 	/**
