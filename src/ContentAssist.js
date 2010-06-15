@@ -6,6 +6,7 @@
  * @param {Object} [options]
  * 
  * @include "ContentAssistProcessor.js"
+ * @include "CompletionProposal.js"
  * @include "TextViewer.js"
  * @include "tx_utils.js"
  */
@@ -19,13 +20,12 @@ function ContentAssist(viewer, processor, options) {
 	this.setOptions(options);
 	
 	// create content assist popup
-	this.popup = document.createElement('div');
-	this.popup.className = 'tx-ca-popup';
-	
-	this.popup_content = document.createElement('div');
-	this.popup_content.className = 'tx-ca-popup-content';
+	this.popup = tx_utils.createElement('div', 'tx-ca-popup');
+	this.popup_content = tx_utils.createElement('div', 'tx-ca-popup-content');
+	this.additional_info = tx_utils.createElement('div', 'tx-ca-additional-info');
 	
 	this.popup.appendChild(this.popup_content);
+	this.popup.appendChild(this.additional_info);
 	
 	viewer.getElement().parentNode.appendChild(this.popup);
 	
@@ -135,6 +135,10 @@ function ContentAssist(viewer, processor, options) {
 		evt = tx_utils.normalizeEvent(evt);
 		evt.preventDefault();
 	});
+	
+	tx_utils.addEvent(this.additional_info, 'scroll', function(/* Event */ evt) {
+		that.hideAdditionalInfo();
+	});
 }
 
 ContentAssist.prototype = {
@@ -212,6 +216,7 @@ ContentAssist.prototype = {
 	
 	hidePopup: function() {
 		this.popup.style.display = 'none';
+		this.hideAdditionalInfo();
 		this.is_visible = false;
 	},
 	
@@ -249,10 +254,6 @@ ContentAssist.prototype = {
 				
 				for (var i = 0, il = proposals.length; i < il; i++) {
 					var proposal_elem = proposals[i].toHtml();
-					if (!i) {
-						tx_utils.addClass(proposal_elem, this.selected_class);
-						this.selected_proposal = 0;
-					}
 					this.popup_content.appendChild(proposal_elem);
 					last_offset = proposals[i].offset;
 					
@@ -272,10 +273,47 @@ ContentAssist.prototype = {
 				this.showPopup(coords.x, coords.y);
 				this.popup_content.style.height = popup_height ? popup_height + 'px' : 'auto';
 				this.last_proposals = proposals;
+				
+				this.selected_proposal = 0;
+				this.selectProposal(this.selected_proposal);
 			} else {
 				this.hidePopup();
 			}
 		}
+	},
+	
+	/**
+	 * Shows additional info for given proposal
+	 * @private
+	 * @param {Number} ix
+	 */
+	showAdditionalInfo: function(ix) {
+		/** @type {CompletionProposal} */
+		var proposal = this.last_proposals[ix];
+		if (proposal && proposal.getAdditionalInfo()) {
+			var proposal_elem = this.popup_content.childNodes[ix],
+				elem = this.additional_info;
+			
+			elem.innerHTML = proposal.getAdditionalInfo();
+			tx_utils.removeClass(elem, 'tx-ca-additional-info-left');
+			tx_utils.setCSS(elem, {
+				display: 'block',
+				top: proposal_elem.offsetTop - this.popup_content.scrollTop
+			});
+			
+			// make sure that additional info window is not outside TextViewer's bounds
+			var viewer = this.viewer.getElement();
+			if (elem.offsetLeft + elem.offsetWidth + this.popup.offsetLeft > viewer.offsetLeft + viewer.offsetWidth) {
+				tx_utils.addClass(elem, 'tx-ca-additional-info-left');
+			}
+		}
+	},
+	
+	/**
+	 * Hide additional info window
+	 */
+	hideAdditionalInfo: function() {
+		tx_utils.setCSS(this.additional_info, {display: 'none'});
 	},
 	
 	/**
@@ -304,6 +342,8 @@ ContentAssist.prototype = {
 					this.popup_content.scrollTop = proposal_top + proposal_height - popup_height;
 				}
 			}
+			
+			this.showAdditionalInfo(ix);
 		}
 			
 		this.selected_proposal = ix;

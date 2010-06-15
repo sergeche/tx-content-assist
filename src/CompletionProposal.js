@@ -27,6 +27,15 @@ CompletionProposal.prototype = {
 	},
 	
 	/**
+	 * Returns proposal's additional info which will be shown when proposal
+	 * is selected
+	 * @return {String}
+	 */
+	getAdditionalInfo: function() {
+		return '';
+	},
+	
+	/**
 	 * Inserts the proposed completion into the given document
 	 * @param {TextViewer} viewer
 	 */
@@ -51,4 +60,4 @@ CompletionProposal.prototype = {
 		
 		return elem;
 	}
-}
+};

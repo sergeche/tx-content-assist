@@ -145,5 +145,40 @@
 		}
 		
 		return evt;
+	},
+	
+	/**
+	 * Creates new element with given class name
+	 * @param {String} name Element's name
+	 * @param {String} class_name Element's class name
+	 * @return {Element}
+	 */
+	createElement: function(name, class_name) {
+		var elem = document.createElement('div');
+		if (class_name)
+			elem.className = class_name;
+			
+		return elem;
+	},
+	
+	/**
+	 * Set CSS propesties for element
+	 * @param {Element} elem
+	 * @param {Object} params
+	 */
+	setCSS: function(elem, params) {
+		if (!elem)
+			return;
+		
+		var props = [],
+			num_props = {'line-height': 1, 'z-index': 1, opacity: 1};
+	
+		for (var p in params) if (params.hasOwnProperty(p)) {
+			var name = p.replace(/([A-Z])/g, '-$1').toLowerCase(),
+				value = params[p];
+			props.push(name + ':' + ((typeof(value) == 'number' && !(name in num_props)) ? value + 'px' : value));
+		}
+	
+		elem.style.cssText += ';' + props.join(';');
 	}
 };
