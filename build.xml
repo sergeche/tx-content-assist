@@ -16,6 +16,7 @@
 			<filelist dir="${js.dir}">
 				<file name="content-assist.js" />
 				<file name="content-assist.css" />
+				<file name="example.html" />
 			</filelist>
 		</zip>
 	</target>
