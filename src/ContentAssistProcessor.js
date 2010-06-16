@@ -89,8 +89,8 @@ ContentAssistProcessor.prototype = {
 		ch = String(ch);
 		if (!ch) return false;
 		
-		var re_ch = /\S/;
-		return re_ch.test(ch);
+		var re_ch = /[\s\.,\!\?\#%\^\$\(\)\{\}<>'"«»]/;
+		return !re_ch.test(ch);
 		
 //		var char_code = ch.charCodeAt(0),
 //			special_chars = ':@!.#-_';
