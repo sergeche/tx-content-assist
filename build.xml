@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="content-assist" basedir="./" default="main">
+	<import file="${webtasks_path}"/>
+
+	<property name="js.dir" value="./build"/>
+	<property name="js-src.dir" value="./src"/>
+
+	<target name="main">
+		<mkdir dir="${js.dir}"/>
+		<compile-js-lib tofile="${js.dir}/content-assist.js">
+			<files>				<filelist dir="${js-src.dir}">					<file name="tx_utils.js" />					<file name="EventDispatcher.js" />					<file name="TextViewer.js" />					<file name="ContentAssist.js" />					<file name="ContentAssistProcessor.js" />					<file name="CompletionProposal.js" />					<file name="BasicContentAssist.js" />				</filelist>			</files>
+		</compile-js-lib>
+		
+		<copy file="content-assist.css" todir="${js.dir}" />
+		<zip destfile="${js.dir}/content-assist.zip">
+			<filelist dir="${js.dir}">
+				<file name="content-assist.js" />
+				<file name="content-assist.css" />
+			</filelist>
+		</zip>
+	</target>
+</project>
