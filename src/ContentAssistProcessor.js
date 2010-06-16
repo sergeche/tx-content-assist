@@ -80,22 +80,41 @@ ContentAssistProcessor.prototype = {
 		return 'abcdefghijklmnopqrstuvwxyz!@$';
 	},
 	
+	/**
+	 * Check if passed character is allowed for word bounds
+	 * @param {String} ch
+	 * @return {Boolean}
+	 */
 	isAllowedChar: function(ch) {
 		ch = String(ch);
 		if (!ch) return false;
 		
-		var char_code = ch.charCodeAt(0),
-			special_chars = ':@!.#-_';
+		var re_ch = /\S/;
+		return re_ch.test(ch);
 		
-		return (char_code > 64 && char_code < 91)       // uppercase letter
-				|| (char_code > 96 && char_code < 123)  // lowercase letter
-				|| (char_code > 47 && char_code < 58)   // number
-				|| special_chars.indexOf(ch) != -1;     // special character
+//		var char_code = ch.charCodeAt(0),
+//			special_chars = ':@!.#-_';
+//		
+//		return (char_code > 64 && char_code < 91)       // uppercase letter
+//				|| (char_code > 96 && char_code < 123)  // lowercase letter
+//				|| (char_code > 47 && char_code < 58)   // number
+//				|| special_chars.indexOf(ch) != -1;     // special character
 	
 	},
 	
 	setWords: function(words) {
-		this.words = words;
+		// index words by first letter for faster search
+		var _w = {};
+		for (var i = 0, il = words.length; i < il; i++) {
+			var ch = words[i].charAt(0);
+			if (!(ch in _w))
+				_w[ch] = [];
+				
+			_w[ch].push(words[i]);
+		}
+		
+		
+		this.words = _w;
 	},
 	
 	/**
@@ -108,10 +127,15 @@ ContentAssistProcessor.prototype = {
 		var result = [];
 			
 		if (prefix && this.words) {
-			for (var i = 0, il = this.words.length; i < il; i++) {
-				var word = this.words[i];
-				if (word.indexOf(prefix) === 0 && word.length > prefix.length)
-					result.push(word);
+			var first_ch = prefix.charAt(0),
+				prefix_len = prefix.length;
+			if (first_ch in this.words) {
+				var words = this.words[first_ch];
+				for (var i = 0, il = words.length; i < il; i++) {
+					var word = words[i];
+					if (word.indexOf(prefix) === 0 && word.length > prefix_len)
+						result.push(word);
+				}
 			}
 		}
 		
