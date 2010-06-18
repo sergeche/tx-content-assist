@@ -1,3 +1,5 @@
-Content assist support for textarea element. See demo here: http://media.chikuyonok.ru/content-assist/
+Content assist support for textarea element based on Eclipse IDE's concept. See demo here: http://media.chikuyonok.ru/content-assist/
+
+MIT license.
 
 More documentation coming soon.
