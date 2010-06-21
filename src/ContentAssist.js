@@ -95,10 +95,13 @@ function ContentAssist(viewer, processor, options) {
 		}
 	});
 	
+	var dont_hide = false;
+	
 	viewer.addEvent('blur', function() {
 		// use delayed execution in to handle popup click event correctly
-		setTimeout(function() {
-			that.hidePopup();
+		that.hide_timeout = setTimeout(function() {
+			if (!dont_hide) that.hidePopup();
+			dont_hide = false;
 		}, 200);
 	});
 	
@@ -121,7 +124,6 @@ function ContentAssist(viewer, processor, options) {
 	tx_utils.addEvent(popup_content, 'click', function(/* Event */ evt) {
 		evt = tx_utils.normalizeEvent(evt);
 		var target = that.searchProposal(evt.target);
-		
 		if (target) {
 			var ix = that.findProposalIx(target);
 			if (ix != -1) {
@@ -134,6 +136,13 @@ function ContentAssist(viewer, processor, options) {
 	tx_utils.addEvent(popup_content, 'mousedown', function(/* Event */ evt) {
 		evt = tx_utils.normalizeEvent(evt);
 		evt.preventDefault();
+		evt.stopPropagation();
+		dont_hide = true;
+		return false;
+	});
+	
+	tx_utils.addEvent(document, 'mousedown', function(/* Event */ evt) {
+		that.hidePopup();
 	});
 	
 	tx_utils.addEvent(this.additional_info, 'scroll', function(/* Event */ evt) {
@@ -204,11 +213,14 @@ ContentAssist.prototype = {
 	showPopup: function(x, y) {
 		this.popup.style.display = 'block';
 		this.popup.style.top = y + 'px';
+		this.popup.style.width = '';
 		
 		// make some adjustments so popup won't appear outside the TextViewer box
 		var elem = this.viewer.getElement();
 		x = Math.min(elem.offsetLeft + elem.offsetWidth - this.popup.offsetWidth, x);
 		this.popup.style.left = x + 'px';
+		
+		this.popup.style.width = this.popup_content.offsetWidth + 'px';
 		
 		this.is_visible = true;
 		this.lockHover();
