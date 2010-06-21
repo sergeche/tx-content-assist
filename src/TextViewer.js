@@ -244,7 +244,7 @@
 	 */
 	function LineCacher(measurer) {
 		this.measurer = measurer;
-		this.width = measurer.offsetWidth;
+		this.width = measurer.clientWidth;
 		this.lines = [];
 	}
 	
@@ -261,7 +261,7 @@
 				return 0;
 				
 			var m = this.measurer,
-				force_recalc = m.offsetWidth != this.width,
+				force_recalc = m.clientWidth != this.width,
 				lines = splitByLines(text),
 				affected_params = getCSS(m, ['padding-top', 'padding-bottom']),
 				affected_size = parseFloat(affected_params['padding-top']) + parseFloat(affected_params['padding-bottom']), 
@@ -281,7 +281,7 @@
 				total_height += this.lines[i].height;
 			}
 			
-			this.width = m.offsetWidth;
+			this.width = m.clientWidth;
 			return total_height;
 		},
 		
@@ -428,7 +428,7 @@
 					+ parseInt(af_props['border-left-width'])
 					+ parseInt(af_props['border-right-width']);
 			
-			this._measurer.style.width = (this.textarea.offsetWidth - offset) + 'px';
+			this._measurer.style.width = (this.textarea.clientWidth - offset) + 'px';
 		},
 		
 		/**
