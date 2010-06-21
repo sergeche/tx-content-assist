@@ -74,6 +74,7 @@ ContentAssistProcessor.prototype = {
 	/**
 	 * Returns the characters which when entered by the user should 
 	 * automatically trigger the presentation of possible completions.
+	 * @private Doesn't work yet
 	 * @return {String}
 	 */
 	getActivationChars: function() {
@@ -109,7 +110,7 @@ ContentAssistProcessor.prototype = {
 			
 		if (prefix && this.words) {
 			for (var i = 0, il = this.words.length; i < il; i++) {
-				var word = this.words[i];
+				var word = this.words[i].toString();
 				if (word.indexOf(prefix) === 0 && word.length > prefix.length)
 					result.push(word);
 			}

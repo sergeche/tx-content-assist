@@ -24,7 +24,7 @@ CompletionProposal.prototype = {
 	 * @return {String}
 	 */
 	getDisplayString: function() {
-		return this.str;
+		return this.str.toString();
 	},
 	
 	/**
@@ -41,12 +41,12 @@ CompletionProposal.prototype = {
 	 * @param {TextViewer} viewer
 	 */
 	apply: function(viewer) {
-		viewer.replaceText(this.str, this.offset, this.offset + this.len);
+		viewer.replaceText(this.str.toString(), this.offset, this.offset + this.len);
 		viewer.setCaretPos(this.cursor);
 	},
 	
 	toString: function() {
-		return this.str;
+		return this.str.toString();
 	},
 	
 	/**

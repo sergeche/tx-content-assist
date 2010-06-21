@@ -154,7 +154,7 @@
 	 * @return {Element}
 	 */
 	createElement: function(name, class_name) {
-		var elem = document.createElement('div');
+		var elem = document.createElement(name);
 		if (class_name)
 			elem.className = class_name;
 			
