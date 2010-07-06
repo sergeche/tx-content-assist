@@ -22,12 +22,14 @@
 		 */
 		copy_props = ('font-family,font-size,line-height,text-indent,' +
 						'padding-top,padding-right,padding-bottom,padding-left,' +
-						'border-left-width,border-right-width,border-left-style,border-right-style').split(',')
+						'border-left-width,border-right-width,border-left-style,border-right-style').split(','),
 		xml_chars = {
 			'<' : '&lt;',
 			'>' : '&gt;',
 			'&' : '&amp;'
-		};
+		},
+		ua = navigator.userAgent.toLowerCase(),
+		line_breaker = ua.indexOf('msie 6') === -1 ? String.fromCharCode(8203) : '&shy;';
 	
 	/**
 	 * Find start and end index of text line for <code>from</code> index
@@ -68,7 +70,7 @@
 		str = str.replace(/[<>&]/g, function(str) {
 			return xml_chars[str];
 		});
-		return has_pre_wrap ? str : str.replace(/\s/g, '&nbsp;&shy;');
+		return has_pre_wrap ? str : str.replace(/\s/g, '&nbsp;' + line_breaker);
 	}
 	
 	/**
