@@ -1,64 +1,62 @@
-/**
- * Completition proposal
- * @author Sergey Chikuyonok (serge.che@gmail.com)
- * @link http://chikuyonok.ru
- * 
- * @param {String} str The actual string to be inserted into the document
- * @param {Number} offset The offset of the text to be replaced
- * @param {Number} length The length of the text to be replaced
- * @param {Number} cursor The position of the cursor following the insert 
- * relative to <code>offset</code>
- * 
- * @include "TextViewer.js"
- */function CompletionProposal(str, offset, length, cursor, additional_info) {
-	this.str = str;
-	this.offset = offset;
-	this.len = length;
-	this.cursor = cursor;
-	this.additional_info = additional_info || '';
-}
+import { createElement } from './utils.js';
 
-CompletionProposal.prototype = {
-	/**
+/**
+ * Completion proposal
+ */
+export default class CompletionProposal {
+    /**
+     * @param {string} str The actual string to be inserted into the document
+     * @param {number} offset The offset of the text to be replaced
+     * @param {number} length The length of the text to be replaced
+     * @param {number} cursor The position of the cursor following the insert
+     * relative to `offset`
+     * @param {string} [additionalInfo]
+     */
+    constructor(str, offset, length, cursor, additionalInfo = '') {
+        this.str = str;
+        this.offset = offset;
+        this.len = length;
+        this.cursor = cursor;
+        this.additional_info = additionalInfo;
+    }
+
+    /**
 	 * Returns the string to be displayed in the list of completion proposals.
-	 * @return {String}
+	 * @return {string}
 	 */
-	getDisplayString: function() {
+	getDisplayString() {
 		return this.str.toString();
-	},
-	
+	}
+
 	/**
 	 * Returns proposal's additional info which will be shown when proposal
 	 * is selected
-	 * @return {String}
+	 * @return {string}
 	 */
-	getAdditionalInfo: function() {
+	getAdditionalInfo() {
 		return this.additional_info;
-	},
-	
+	}
+
 	/**
 	 * Inserts the proposed completion into the given document
-	 * @param {TextViewer} viewer
+	 * @param {import('./TextViewer').default} viewer
 	 */
-	apply: function(viewer) {
+	apply(viewer) {
 		viewer.replaceText(this.str.toString(), this.offset, this.offset + this.len);
 		viewer.setCaretPos(this.cursor);
-	},
-	
-	toString: function() {
+	}
+
+	toString() {
 		return this.str.toString();
-	},
-	
+	}
+
 	/**
 	 * Create DOM node for proposal
-	 * @return {}
+	 * @return {HTMLElement}
 	 */
-	toHtml: function() {
-		var elem = document.createElement('div');
-		elem.className = 'tx-proposal';
-		
-		elem.appendChild( document.createTextNode(this.getDisplayString()) );
-		
+	toHtml() {
+        const elem = createElement('div', 'tx-proposal');
+        elem.innerText = this.getDisplayString();
 		return elem;
 	}
-};
+}
